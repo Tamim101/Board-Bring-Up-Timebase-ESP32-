@@ -104,3 +104,11 @@ void setup(){
 void loop(){
 
 }
+void setup(){
+    Serial.begin(115200);
+    randomSeed(esp_random());
+    xTaskCreatePinnedToCore(fc_task,"FC",8192,nullptr,1,nullptr,0);
+}
+void loop(){
+
+}
