@@ -1,0 +1,84 @@
+// =========================
+// HTML dashboard page
+// Served at /
+// =========================
+const char* DASHBOARD_HTML = R"HTML(
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>ESP32 Flight Telemetry</title>
+<style>
+  body { font-family: sans-serif; background:#0f172a; color:#fff; padding:20px; }
+  .card { background:#1e293b; padding:16px; border-radius:12px; margin-bottom:16px; max-width:400px; }
+  h1 { font-size:20px; margin:0 0 12px; color:#38bdf8; }
+  .row { display:flex; justify-content:space-between; font-size:14px; }
+  .motor { width:22%; background:#334155; border-radius:8px; padding:8px; text-align:center; }
+  .val   { font-weight:bold; color:#fff; }
+  .lbl   { color:#94a3b8; font-size:12px; }
+</style>
+</head>
+<body>
+  <h1>ESP32 Flight Telemetry</h1>
+
+  <div class="card">
+    <div class="row"><div>Roll:</div><div id="roll" class="val">0</div></div>
+    <div class="row"><div>Pitch:</div><div id="pitch" class="val">0</div></div>
+    <div class="row"><div>Yaw:</div><div id="yaw" class="val">0</div></div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="gap:4px;">
+      <div class="motor">
+        <div class="val" id="m0">0</div>
+        <div class="lbl">M0</div>
+      </div>
+      <div class="motor">
+        <div class="val" id="m1">0</div>
+        <div class="lbl">M1</div>
+      </div>
+      <div class="motor">
+        <div class="val" id="m2">0</div>
+        <div class="lbl">M2</div>
+      </div>
+      <div class="motor">
+        <div class="val" id="m3">0</div>
+        <div class="lbl">M3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row"><div>Loop Hz:</div><div id="hz" class="val">0</div></div>
+  </div>
+
+<script>
+async function refresh() {
+  try {
+    const res = await fetch("/telemetry");
+    const data = await res.json();
+
+    // Update attitude
+    document.getElementById("roll").textContent  = data.roll.toFixed(2);
+    document.getElementById("pitch").textContent = data.pitch.toFixed(2);
+    document.getElementById("yaw").textContent   = data.yaw.toFixed(2);
+
+    // Update motors
+    document.getElementById("m0").textContent = data.motors[0].toFixed(2);
+    document.getElementById("m1").textContent = data.motors[1].toFixed(2);
+    document.getElementById("m2").textContent = data.motors[2].toFixed(2);
+    document.getElementById("m3").textContent = data.motors[3].toFixed(2);
+
+    // Update loop rate
+    document.getElementById("hz").textContent = data.hz.toFixed(1);
+  } catch(e){
+    console.log("fetch error", e);
+  }
+}
+
+// refresh UI 5 times per second
+setInterval(refresh, 200);
+</script>
+</body>
+</html>
+)HTML";
