@@ -37,7 +37,7 @@ float safeFloat(float v) {
   return v;
 }
 
-// ==================== PID Update ====================
+
 float pid_update(Axis &a, float dt) {
   // protect against insane dt (0 or extremely tiny)
   if (dt <= 0.000001f) {
@@ -57,7 +57,7 @@ float pid_update(Axis &a, float dt) {
   return u;
 }
 
-// ==================== Physics & Control Loop ====================
+
 void update_flight_model() {
   uint64_t now = micros();
   if (last_update_us == 0) {
